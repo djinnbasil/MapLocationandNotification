@@ -86,7 +86,7 @@ public class AfterBio extends AppCompatActivity implements OnMapReadyCallback {
         if (resultCode == RESULT_OK) {
             final Place place = Autocomplete.getPlaceFromIntent(data);
             if (requestCode == 2) {
-                locationstart.setText(place.getName());
+
 
                 LatLng latlng = place.getLatLng();
                 place_name = place.getName();
@@ -155,14 +155,16 @@ public class AfterBio extends AppCompatActivity implements OnMapReadyCallback {
                                     Log.d("Api Result3",jsonObject1.toString());
                                     String placeicon = jsonObject1.getString("formatted_address");
                                     Log.d("Api Result4",placeicon);
-                                    locationstart.setText(placeicon);
-                                    int high_rate = 0;
+
+                                    float high_rate = 0;
                                     String temp_place = "";
-                                    for(int i = 0 ;i<places_of_interest.size();i++) {
+                                    for(int j = 0 ;j<places_of_interest.size();j++) {
                                         InterestPlace temppoi = new InterestPlace();
+                                        temppoi = places_of_interest.get(j);
                                         temp_place = temppoi.name;
+                                        Log.d("Rating",temppoi.rating);
                                         if (temppoi.rating != "") {
-                                            int temp_rating = Integer.parseInt(temppoi.rating);
+                                            float temp_rating = Float.parseFloat(temppoi.rating);
 
 
                                             if (temp_rating > high_rate) {
@@ -173,7 +175,7 @@ public class AfterBio extends AppCompatActivity implements OnMapReadyCallback {
                                         }
                                     }
 
-                                    send_notification(temp_place,high_rate);
+                                    send_notification(place_name,temp_place,high_rate);
 
 
                                     //JSONObject jsonObject2 = new JSONObject(array2.get(0).toString());
@@ -265,11 +267,11 @@ public class AfterBio extends AppCompatActivity implements OnMapReadyCallback {
 
     }
 
-    public void send_notification(String temp_place,int high_rate){
+    public void send_notification(String place_name,String temp_place,float high_rate){
 
 
         NotificationCompat.Builder notifyBuilder = getNotificationBuilder();
-        notifyBuilder.setContentTitle("Best Place").setContentInfo("Queens");
+        notifyBuilder.setContentTitle("Best Place in "+place_name+" is "+temp_place + " Rating : " +Float.toString(high_rate));
         mNotificationManager.notify(NOTIFICATION_ID,notifyBuilder.build());
 
 
